@@ -1,0 +1,40 @@
+<view class="component-common-calendar">
+	<view class="title flex between verticalcenter">
+		<view class="title-name">
+			{{selectDay.year}}.{{selectDay.month > 9 ? selectDay.month : "0" + selectDay.month}}
+			<view class="icon" bindtap="lastMonth">👆</view>
+			<view class="icon" bindtap="nextMonth">👇</view>
+		</view>
+		<view catchtap="openChange" class="title-open">
+			<view>{{open ? "收起" : "展开"}}</view>
+		</view>
+	</view>
+	<!-- 日历头部 -->
+	<view class="calendar-week">
+		<view class="view">日</view>
+		<view class="view">一</view>
+		<view class="view">二</view>
+		<view class="view">三</view>
+		<view class="view">四</view>
+		<view class="view">五</view>
+		<view class="view">六</view>
+	</view>
+	<!-- 日历主体 -->
+	<view class="calendar-main" style="height:{{dateList.length/7*72}}rpx">
+		<view wx:for="{{dateList}}" wx:key="dateList" class="day">
+			<view
+			 class="bg {{(item.year === selectDay.year && item.month === selectDay.month) ? (item.day === selectDay.day ? 'select' : '') : 'other-month'}}"
+			 catchtap="selectChange"
+			 data-day="{{item.day}}"
+			 data-year="{{item.year}}"
+			 data-month="{{item.month}}"
+			 data-date-string="{{item.dateString}}"
+			>
+				{{item.day}}
+			</view>
+			<view class="spot" wx:if="{{item.spot && !isShowSlotSpot}}"></view>
+			<slot name="spot" />
+		</view>
+	</view>
+</view>
+
