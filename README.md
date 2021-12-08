@@ -26,6 +26,6 @@
 | :-------- | :------- | :--------- | :--------- | ------------------------------------------------------------------ |
 |spot|Array|[]|×|设置绿点的时间，样式可自定义|
 |isShowSlotSpot|Boolean|false|×|是否显示slot的spot|
-|defaultTime|String|''|×|当前默认选中时间，不传则为当前日期`filters`|
-|onSelect|Function|()=>{year,month,day,dateString}|×|生成 Excel 前的回调函数|
-|onToggleOpen |Function|()=>true or false|×|生成 Excel 成功的回调函数|
+|defaultTime|String|''|×|当前默认选中时间，不传则为当前日期|
+|onSelect|Function|()=>{year,month,day,dateString}|×|选中日期的回调函数|
+|onToggleOpen |Function|()=>true or false|×|展开/收起日历的回调函数|
