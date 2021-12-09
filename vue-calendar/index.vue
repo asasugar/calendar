@@ -3,42 +3,42 @@
  * @Author: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
  * @Date: 2021-12-07 17:40:33
  * @LastEditors: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
- * @LastEditTime: 2021-12-07 18:37:51
+ * @LastEditTime: 2021-12-09 16:32:58
 -->
 <template>
-  <view class="component-common-calendar">
-    <view class="title">
-      <view class="title-name">
+  <div class="component-common-calendar">
+    <div class="title">
+      <div class="title-name">
         {{ selectDay.year }}.{{ selectDay.month > 9 ? selectDay.month : "0" + selectDay.month }}
-        <view class="icon" @click="lastMonth">👆</view>
-        <view class="icon" @click="nextMonth">👇</view>
-      </view>
-      <view class="title-open" @click="openChange">
-        <view>{{ open ? "收起" : "展开" }}</view>
-      </view>
-    </view>
+        <div class="icon" @click="lastMonth">👆</div>
+        <div class="icon" @click="nextMonth">👇</div>
+      </div>
+      <div class="title-open" @click="openChange">
+        <div>{{ open ? "收起" : "展开" }}</div>
+      </div>
+    </div>
     <!-- 日历头部 -->
-    <view class="calendar-week">
-      <view class="view">日</view>
-      <view class="view">一</view>
-      <view class="view">二</view>
-      <view class="view">三</view>
-      <view class="view">四</view>
-      <view class="view">五</view>
-      <view class="view">六</view>
-    </view>
+    <div class="calendar-week">
+      <div>日</div>
+      <div>一</div>
+      <div>二</div>
+      <div>三</div>
+      <div>四</div>
+      <div>五</div>
+      <div>六</div>
+    </div>
     <!-- 日历主体 -->
-    <view class="calendar-main" :style="{height : `${dateList.length/7*72}rpx`}">
-      <view v-for="(item,index) in dateList" :key="index" class="day">
-        <view
+    <div class="calendar-main" :style="{height : `${dateList.length/7*72}px`}">
+      <div v-for="(item,index) in dateList" :key="index" class="day">
+        <div
           :class="['bg',(item.year === selectDay.year && item.month === selectDay.month) ? (item.day === selectDay.day ? 'select' : '') : 'other-month']"
           @click="selectChange(item)"
-        >{{ item.day }}</view>
-        <view v-if="item.spot && !isShowSlotSpot" class="spot" />
+        >{{ item.day }}</div>
+        <div v-if="item.spot && !isShowSlotSpot" class="spot" />
         <slot name="spot" />
-      </view>
-    </view>
-  </view>
+      </div>
+    </div>
+  </div>
 </template>
 <script>
 export default {
@@ -273,45 +273,46 @@ export default {
 </script>
 <style lang="scss" scoped>
 .component-common-calendar {
+  width: 700px;
+  padding: 0 25px;
   background-color: #fff;
   .title {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 40rpx;
+    font-size: 40px;
     color: #333;
-    padding: 30rpx;
-    line-height: 60rpx;
+    padding: 30px;
+    line-height: 60px;
     .title-name,
     .title-open {
       display: flex;
       align-items: center;
     }
     .year-month {
-      margin-right: 20rpx;
+      margin-right: 20px;
     }
     .icon {
-      padding: 0 16rpx;
-      font-size: 32rpx;
+      padding: 0 16px;
+      font-size: 32px;
       color: #999;
     }
     .title-open {
       background-color: #f6f6f6;
       color: #999;
-      font-size: 22rpx;
-      line-height: 36rpx;
-      border-radius: 18rpx;
-      padding: 0 14rpx;
+      font-size: 22px;
+      line-height: 36px;
+      border-radius: 18px;
+      padding: 0 14px;
     }
   }
   .calendar-week {
     display: flex;
-    line-height: 40rpx;
-    padding: 0 25rpx;
-    font-size: 28rpx;
+    line-height: 40px;
+    font-size: 28px;
     color: #999;
-    .view {
-      width: 100rpx;
+    div {
+      width: 100px;
       text-align: center;
     }
   }
@@ -319,24 +320,24 @@ export default {
   .calendar-main {
     display: flex;
     flex-wrap: wrap;
-    padding: 30rpx 25rpx;
+    padding: 30px 0;
     transition: height 0.3s;
     overflow: hidden;
     .day {
       position: relative;
-      width: 100rpx;
+      width: 100px;
       color: #666;
       text-align: center;
-      height: 72rpx;
+      height: 72px;
       .bg {
-        height: 56rpx;
-        line-height: 56rpx;
-        font-size: 28rpx;
+        height: 56px;
+        line-height: 56px;
+        font-size: 28px;
         color: #333;
         font-weight: bold;
       }
       .select {
-        width: 56rpx;
+        width: 56px;
         border-radius: 50%;
         text-align: center;
         color: #fff;
@@ -348,11 +349,11 @@ export default {
         color: #ccc;
       }
       .spot {
-        width: 8rpx;
-        height: 8rpx;
+        width: 8px;
+        height: 8px;
         background-color: #1dcdb8;
         border-radius: 50%;
-        margin: 6rpx auto 0;
+        margin: 6px auto 0;
       }
     }
   }
