@@ -1,15 +1,15 @@
 <!--
- * @Description: Vue日历组件
+ * @Description: Vue3日历组件
  * @Author: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
  * @Date: 2021-12-07 17:40:33
  * @LastEditors: Xiongjie.Xue(xiongjie.xue@luckincoffee.com)
- * @LastEditTime: 2021-12-09 18:23:54
+ * @LastEditTime: 2021-12-09 18:23:35
 -->
 <template>
   <div class="component-common-calendar">
     <div class="title">
       <div class="title-name">
-        {{ selectDay.year }}.{{ selectDay.month > 9 ? selectDay.month : "0" + selectDay.month }}
+        {{ state.selectDay.year }}.{{ state.selectDay.month > 9 ? state.selectDay.month : "0" + state.selectDay.month }}
         <div class="icon" @click="lastMonth">👆</div>
         <div class="icon" @click="nextMonth">👇</div>
       </div>
@@ -28,10 +28,10 @@
       <div>六</div>
     </div>
     <!-- 日历主体 -->
-    <div class="calendar-main" :style="{height : `${dateList.length/7*72}px`}">
-      <div v-for="(item,index) in dateList" :key="index" class="day">
+    <div class="calendar-main" :style="{height : `${state.dateList.length/7*72}px`}">
+      <div v-for="(item,index) in state.dateList" :key="index" class="day">
         <div
-          :class="['bg',(item.year === selectDay.year && item.month === selectDay.month) ? (item.day === selectDay.day ? 'select' : '') : 'other-month']"
+          :class="['bg',(item.year === state.selectDay.year && item.month === state.selectDay.month) ? (item.day === state.selectDay.day ? 'select' : '') : 'other-month']"
           @click="selectChange(item)"
         >{{ item.day }}</div>
         <div v-if="item.spot && !isShowSlotSpot" class="spot" />
@@ -41,7 +41,8 @@
   </div>
 </template>
 <script>
-export default {
+import { defineComponent, ref, reactive } from "vue";
+export default defineComponent({
   props: {
     spot: {
       type: Array,
@@ -56,44 +57,39 @@ export default {
       default: "",
     },
   },
-  data() {
-    return {
-      open: true,
+  setup(props, content) {
+    const open = ref(true);
+    const state = reactive({
       dateList: [], // 日历主体渲染数组
-      selectDay: {}, // 选中时间
-    };
-  },
-  created() {
-    const now = this.defaultTime ? new Date(this.defaultTime) : new Date();
-    const selectDay = {
-      year: now.getFullYear(),
-      month: now.getMonth() + 1,
-      day: now.getDate(),
-      dateString: this.formatTime(now, "Y-M-D"),
-    };
-    this.setMonth(selectDay.year, selectDay.month, selectDay.day);
-  },
-  methods: {
-    formatNumber(n) {
+      selectDay: {
+        // 选中时间
+        year: 0,
+        month: 0,
+        day: 0,
+        dateString: "",
+      },
+    });
+
+    const formatNumber = (n) => {
       n = n.toString();
       return n[1] ? n : `0${n}`;
-    },
-    getDate(time, format) {
+    };
+    const getDate = (time, format) => {
       const formateArr = ["Y", "M", "D", "h", "m", "s"];
       const returnArr = [];
       const date = new Date(time);
       returnArr.push(date.getFullYear());
-      returnArr.push(this.formatNumber(date.getMonth() + 1));
-      returnArr.push(this.formatNumber(date.getDate()));
-      returnArr.push(this.formatNumber(date.getHours()));
-      returnArr.push(this.formatNumber(date.getMinutes()));
-      returnArr.push(this.formatNumber(date.getSeconds()));
+      returnArr.push(formatNumber(date.getMonth() + 1));
+      returnArr.push(formatNumber(date.getDate()));
+      returnArr.push(formatNumber(date.getHours()));
+      returnArr.push(formatNumber(date.getMinutes()));
+      returnArr.push(formatNumber(date.getSeconds()));
       returnArr.forEach((v, i) => {
         format = format.replace(formateArr[i], v);
       });
       return format;
-    },
-    getDateDiff(time) {
+    };
+    const getDateDiff = (time) => {
       let r = "";
       const ft = new Date(time);
       const nt = new Date();
@@ -134,88 +130,29 @@ export default {
           r = getDate(time, "Y-M-D");
       }
       return r;
-    },
+    };
     /**
      * 时间戳转化为年 月 日 时 分 秒
      * time: 需要被格式化的时间，可以被new Date()解析即可
      * format：格式化之后返回的格式，年月日时分秒分别为Y, M, D, h, m, s，这个参数不填的话则显示多久前
      */
-    formatTime(time, format) {
+    const formatTime = (time, format) => {
       if (!format) {
-        return this.getDateDiff(time);
+        return getDateDiff(time);
       }
-      return this.getDate(time, format);
-    },
-    // 上月切换按钮点击
-    lastMonth() {
-      const lastMonth = new Date(this.selectDay.year, this.selectDay.month - 2);
-      const year = lastMonth.getFullYear();
-      const month = lastMonth.getMonth() + 1;
-      this.setMonth(year, month);
-    },
-    // 下月切换按钮点击
-    nextMonth() {
-      const nextMonth = new Date(this.selectDay.year, this.selectDay.month);
-      const year = nextMonth.getFullYear();
-      const month = nextMonth.getMonth() + 1;
-      this.setMonth(year, month);
-    },
-    // 设置月份
-    setMonth(setYear, setMonth, setDay) {
-      if (
-        this.selectDay.year !== setYear ||
-        this.selectDay.month !== setMonth
-      ) {
-        const day = Math.min(
-          new Date(setYear, setMonth, 0).getDate(),
-          this.selectDay.day
-        );
-        const time = new Date(setYear, setMonth - 1, setDay || day);
-
-        this.selectDay = {
-          year: setYear,
-          month: setMonth,
-          day: setDay || day,
-          dateString: this.formatTime(time, "Y-M-D"),
-        };
-        if (!setDay) {
-          this.open = true;
-        }
-
-        this.dateInit(setYear, setMonth);
-        this.setSpot();
-        this.$emit("onSelect", this.selectDay);
-      }
-    },
-    // 展开收起
-    openChange() {
-      this.open = !this.open;
-      this.$emit("onToggleOpen", this.open);
-      this.dateInit();
-      this.setSpot();
-    },
-    // 设置日历底下是否展示小圆点
-    setSpot() {
-      const timeArr = this.spot.map((item) => {
-        return this.formatTime(item, "Y-M-D");
-      });
-      this.dateList = this.dateList.map((item) => {
-        if (timeArr.indexOf(item.dateString) !== -1) {
-          item.spot = true;
-        } else {
-          item.spot = false;
-        }
-        return item;
-      });
-    },
+      return getDate(time, format);
+    };
     // 日历主体的渲染方法
-    dateInit(setYear = this.selectDay.year, setMonth = this.selectDay.month) {
+    const dateInit = (
+      setYear = state.selectDay.year,
+      setMonth = state.selectDay.month
+    ) => {
       const dateList = []; // 需要遍历的日历数组数据
       const now = new Date(setYear, setMonth - 1); // 当前月份的1号
       const startWeek = now.getDay(); // 目标月1号对应的星期
       const dayNum = new Date(setYear, setMonth, 0).getDate(); // 当前月有多少天
       const forNum = Math.ceil((startWeek + dayNum) / 7) * 7; // 当前月跨越的周数
-      if (this.open) {
+      if (open.value) {
         // 展开状态，需要渲染完整的月份
         for (let i = 0; i < forNum; i++) {
           const now2 = new Date(now);
@@ -225,7 +162,7 @@ export default {
             day: now2.getDate(),
             month: now2.getMonth() + 1,
             year: now2.getFullYear(),
-            dateString: this.formatTime(now2, "Y-M-D"),
+            dateString: formatTime(now2, "Y-M-D"),
           };
           dateList[i] = obj;
         }
@@ -235,7 +172,7 @@ export default {
           const now2 = new Date(now);
           // 当前周的7天
           now2.setDate(
-            Math.ceil((this.selectDay.day + startWeek) / 7) * 7 -
+            Math.ceil((state.selectDay.day + startWeek) / 7) * 7 -
               6 -
               startWeek +
               i
@@ -245,37 +182,121 @@ export default {
             day: now2.getDate(),
             month: now2.getMonth() + 1,
             year: now2.getFullYear(),
-            dateString: this.formatTime(now2, "Y-M-D"),
+            dateString: formatTime(now2, "Y-M-D"),
           };
           dateList[i] = obj;
         }
       }
-      this.dateList = dateList;
-    },
-    // 一天被点击时
-    selectChange(item) {
-      const { year, month, day, dateString } = item;
-      const selectDay = {
-        year,
-        month,
-        day,
-        dateString,
-      };
-      if (this.selectDay.year !== year || this.selectDay.month !== month) {
-        this.setMonth(year, month, day);
-      } else if (this.selectDay.day !== day) {
-        this.selectDay = selectDay;
-        this.$emit("onSelect", this.selectDay);
+      state.dateList = dateList;
+    };
+    // 设置日历底下是否展示小圆点
+    const setSpot = () => {
+      const timeArr = props.spot.map((item) => {
+        return formatTime(item, "Y-M-D");
+      });
+      state.dateList = state.dateList.map((item) => {
+        if (timeArr.indexOf(item.dateString) !== -1) {
+          item.spot = true;
+        } else {
+          item.spot = false;
+        }
+        return item;
+      });
+    };
+    // 设置月份
+    const setMonth = (setYear, setMonth, setDay) => {
+      if (
+        state.selectDay.year !== setYear ||
+        state.selectDay.month !== setMonth
+      ) {
+        const day = Math.min(
+          new Date(setYear, setMonth, 0).getDate(),
+          state.selectDay.day
+        );
+        const time = new Date(setYear, setMonth - 1, setDay || day);
+        state.selectDay = {
+          year: setYear,
+          month: setMonth,
+          day: setDay || day,
+          dateString: formatTime(time, "Y-M-D"),
+        };
+        if (!setDay) {
+          open.value = true;
+        }
+
+        dateInit(setYear, setMonth);
+        setSpot();
+        content.emit("onSelect", state.selectDay);
       }
-    },
+    };
+    // 上月切换按钮点击
+    const lastMonth = () => {
+      const lastMonth = new Date(
+        state.selectDay.year,
+        state.selectDay.month - 2
+      );
+      const year = lastMonth.getFullYear();
+      const month = lastMonth.getMonth() + 1;
+      setMonth(year, month);
+    };
+    // 下月切换按钮点击
+    const nextMonth = () => {
+      const nextMonth = new Date(state.selectDay.year, state.selectDay.month);
+      const year = nextMonth.getFullYear();
+      const month = nextMonth.getMonth() + 1;
+      setMonth(year, month);
+    };
+    // 展开收起
+    const openChange = () => {
+      open.value = !open.value;
+      content.emit("onToggleOpen", open.value);
+      dateInit();
+      setSpot();
+    };
+
+    // 一天被点击时
+    const selectChange = (item) => {
+      const { year, month, day, dateString } = item;
+
+      if (state.selectDay.year !== year || state.selectDay.month !== month) {
+        setMonth(year, month, day);
+      } else if (state.selectDay.day !== day) {
+        state.selectDay = {
+          year,
+          month,
+          day,
+          dateString,
+        };
+        content.emit("onSelect", state.selectDay);
+      }
+    };
+
+    // 初始化当前日期
+    const now = props.defaultTime ? new Date(props.defaultTime) : new Date();
+    const selectNowDay = {
+      year: now.getFullYear(),
+      month: now.getMonth() + 1,
+      day: now.getDate(),
+      dateString: formatTime(now, "Y-M-D"),
+    };
+    setMonth(selectNowDay.year, selectNowDay.month, selectNowDay.day);
+
+    return {
+      open,
+      state,
+      lastMonth,
+      nextMonth,
+      openChange,
+      selectChange,
+    };
   },
-};
+});
 </script>
-<style lang="scss" scoped>
+<style lang="less" scoped>
 .component-common-calendar {
+  background-color: #fff;
   width: 700px;
   padding: 0 25px;
-  background-color: #fff;
   .title {
     display: flex;
     justify-content: space-between;

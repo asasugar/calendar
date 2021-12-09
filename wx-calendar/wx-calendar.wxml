@@ -33,7 +33,7 @@
 				{{item.day}}
 			</view>
 			<view class="spot" wx:if="{{item.spot && !isShowSlotSpot}}"></view>
-			<slot name="spot" />
+			<slot name="spot" wx:if="{{item.spot && isShowSlotSpot}}" />
 		</view>
 	</view>
 </view>

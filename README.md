@@ -3,8 +3,7 @@
 
 
 ## UI效果
-![20211207175255](https://s2.loli.net/2021/12/07/xo9aW68FwNACq7c.png)
-
+![20211209181542](https://s2.loli.net/2021/12/09/Pl4IVqA5oyv8axK.png)
 ## 重点
 
 - `spot` 可以传入时间戳或者带有`/`格式 、`-`格式的字符串，默认ui是绿点，可根据需求传入slot自定义样式

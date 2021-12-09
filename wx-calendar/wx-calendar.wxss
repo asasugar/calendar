@@ -82,7 +82,7 @@
   border-radius: 50%;
   text-align: center;
   color: #fff;
-  background: linear-gradient(-60deg, #0FDAC5, #1BC7B0);
+  background: linear-gradient(-60deg, #0FDAC5, #0028AB);
   box-shadow: 0px 5px 16px 0px #C6F3ED;
   margin: 0 auto;
 }
@@ -94,7 +94,7 @@
 .component-common-calendar .calendar-main .day .spot {
   width: 8rpx;
   height: 8rpx;
-  background-color: #1DCDB8;
+  background-color: #0028AB;
   border-radius: 50%;
   margin: 6rpx auto 0;
 }
